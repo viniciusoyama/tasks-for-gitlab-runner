@@ -1,4 +1,4 @@
-# Tarefas automatizadas para o CI
+# Tarefas automatizadas para o Gilab CI
 
 ## Setup
 
