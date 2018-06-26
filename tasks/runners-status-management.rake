@@ -9,6 +9,21 @@ namespace :runners do
     end
   end
 
+  desc "Install docker dompose"
+  task :install_compose do
+    on runners_ips, in: :parallel do |host|
+      sudo "curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose"
+      sudo "chmod +x /usr/local/bin/docker-compose"
+    end
+  end
+
+  desc "Allow docker commands for gitlab-runner user"
+  task :setup_permissions do
+    on runners_ips, in: :parallel do |host|
+      sudo "groupadd docker"
+      sudo "usermod -aG docker gitlab-runner"
+    end
+  end
 
   desc "Registra um runner utilizando um token e endpoint com configurações já padronizadas"
   task :register_token do
