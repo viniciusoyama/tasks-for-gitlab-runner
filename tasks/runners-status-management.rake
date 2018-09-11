@@ -46,9 +46,10 @@ namespace :runners do
     end
   end
 
+  desc "Executa todas as tasks necessárias para o setup do gitlab runner em"
   task :install => [:install_docker, :install_compose, :install_runner, :setup_gitlab_runner]
 
-  desc "Registra um runner utilizando um token e endpoint com configurações já padronizadas"
+  desc "Registra um runner docker utilizando um token e endpoint com configurações já padronizadas"
   task :register_token do
     on runners_ips, in: :parallel do |host|
       registration_url = ask_question("Qual a URL de registro?")
