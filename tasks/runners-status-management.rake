@@ -12,18 +12,41 @@ namespace :runners do
   desc "Install docker dompose"
   task :install_compose do
     on runners_ips, in: :parallel do |host|
-      sudo "curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose"
+      sudo "sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/bin/docker-compose"
       sudo "chmod +x /usr/bin/docker-compose"
     end
   end
 
-  desc "Allow docker commands for gitlab-runner user"
-  task :setup_permissions do
+  desc "Install and configure docker"
+  task :install_docker do
     on runners_ips, in: :parallel do |host|
-      sudo "groupadd docker"
+      sudo "yum update -y"
+      sudo "yum install -y docker"
+      sudo "service docker start"
+      sudo "usermod -a -G docker ec2-user"
+    end
+  end
+
+  desc "Install gitlab runner"
+  task :install_runner do
+    on runners_ips, in: :parallel do |host|
+      sudo "curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.rpm.sh | sudo bash"
+      sudo "yum install -y gitlab-runner"
       sudo "usermod -aG docker gitlab-runner"
     end
   end
+
+  task :setup_gitlab_runner do
+    on runners_ips, in: :parallel do |host|
+      sudo "mkdir -p /builds"
+      sudo "mkdir -p /runners"
+      sudo "mkdir -p /runners/cache"
+      sudo "chmod -R 777 /builds"
+      sudo "chmod -R 777 /runners"
+    end
+  end
+
+  task :install => [:install_docker, :install_compose, :install_runner, :setup_gitlab_runner]
 
   desc "Registra um runner utilizando um token e endpoint com configurações já padronizadas"
   task :register_token do

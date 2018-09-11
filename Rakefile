@@ -1,5 +1,6 @@
 require 'dotenv/load'
 require 'sshkit'
+require 'sshkit/sudo'
 require 'sshkit/dsl'
 require 'readline'
 include SSHKit::DSL

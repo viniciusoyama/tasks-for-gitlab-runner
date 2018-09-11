@@ -15,5 +15,3 @@ sudo mkdir -p /runners
 sudo mkdir -p /runners/cache
 sudo chmod -R 777 /builds
 sudo chmod -R 777 /runners
-
-sudo gitlab-runner register --registration-token TOKEN --url https://git.dev.codus.com.br/ci --builds-dir /builds --docker-volumes /runners/cache:/cache  --executor docker  --docker-shm-size 4000000000 --docker-privileged true
